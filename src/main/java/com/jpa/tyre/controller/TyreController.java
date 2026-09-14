@@ -1,5 +1,6 @@
 package com.jpa.tyre.controller;
 
+import com.jpa.tyre.dto.TyreDto;
 import com.jpa.tyre.model.Tyre;
 import com.jpa.tyre.service.TyreService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class TyreController {
 
     @GetMapping
     public ResponseEntity<?> getAllTyre(){
-        List<Tyre> tyres=tyreService.getAllTyres();
+        List<TyreDto> tyres=tyreService.getAllTyres();
         if (tyres.isEmpty()){
            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else {
@@ -28,7 +29,7 @@ public class TyreController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable(name ="id") Long id){
-        Tyre tyre =tyreService.getById(id);
+        TyreDto tyre =tyreService.getById(id);
         if (Objects.isNull(tyre)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }else {
@@ -36,14 +37,14 @@ public class TyreController {
         }
     }
     @PostMapping("/addtyre")
-    public ResponseEntity<?> addTyre(@RequestBody Tyre tyre){
-       Tyre addTyre= tyreService.addTyre(tyre);
+    public ResponseEntity<?> addTyre(@RequestBody TyreDto tyreDto){
+       TyreDto addTyre= tyreService.addTyre(tyreDto);
        return new ResponseEntity<>(addTyre, HttpStatus.CREATED);
     }
     @PutMapping("/updatetyre/{id}")
     public ResponseEntity<?> updateTyre(@PathVariable(name="id") Long id,
-                                        @RequestBody Tyre tyre){
-        Tyre newTyre= tyreService.updateTyre(id,tyre);
+                                        @RequestBody TyreDto tyreDto){
+        TyreDto newTyre= tyreService.updateTyre(id,tyreDto);
         if (Objects.isNull(newTyre)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

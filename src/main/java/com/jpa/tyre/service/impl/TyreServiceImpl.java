@@ -1,5 +1,6 @@
 package com.jpa.tyre.service.impl;
 
+import com.jpa.tyre.dto.TyreDto;
 import com.jpa.tyre.model.Tyre;
 import com.jpa.tyre.repository.TyreRepository;
 import com.jpa.tyre.service.TyreService;
@@ -14,34 +15,38 @@ import java.util.List;
 public class TyreServiceImpl implements TyreService {
     private final TyreRepository tyreRepository;
     @Override
-    public List<Tyre> getAllTyres() {
-        return tyreRepository.findAll();
+    public List<TyreDto> getAllTyres() {
+        List<Tyre> tyres =tyreRepository.findAll();
+       return tyres.stream().map(this::toDto).toList();
     }
 
     @Override
-    public Tyre getById(Long id) {
+    public TyreDto getById(Long id) {
        Tyre tyre= tyreCheckById(id);
        if (tyre!=null){
-           return tyre;
+
+           return toDto(tyre);
        }
        return null;
     }
 
     @Override
-    public Tyre addTyre(Tyre tyre) {
-        return tyreRepository.save(tyre);
+    public TyreDto addTyre(TyreDto tyreDto) {
+        Tyre tyre= toEntity(tyreDto);
+        tyreRepository.save(tyre);
+        return toDto(tyre);
     }
 
     @Override
-    public Tyre updateTyre(Long id, Tyre newTyre) {
+    public TyreDto updateTyre(Long id, TyreDto newTyreDto) {
        Tyre tyre= tyreCheckById(id);
        if (tyre!=null){
-           tyre.setName(newTyre.getName());
-           tyre.setProfile(newTyre.getProfile());
-           tyre.setPrice(newTyre.getPrice());
-           tyre.setManufacturer(newTyre.getManufacturer());
+           tyre.setName(newTyreDto.getTyreName());
+           tyre.setProfile(newTyreDto.getTyreProfile());
+           tyre.setPrice(newTyreDto.getPrice());
+           tyre.setManufacturer(newTyreDto.getTyreManufacturer());
            tyreRepository.save(tyre);
-           return tyre;
+           return toDto(tyre);
        }
        return null;
     }
@@ -49,6 +54,7 @@ public class TyreServiceImpl implements TyreService {
     @Override
     public boolean deleteTyre(Long id) {
         Tyre tyre= tyreCheckById(id);
+
         if (tyre!=null){
             tyreRepository.deleteById(id);
             return true;
@@ -59,4 +65,25 @@ public class TyreServiceImpl implements TyreService {
     private Tyre tyreCheckById(Long id){
         return tyreRepository.findById(id).orElse(null);
     }
+    private Tyre toEntity(TyreDto tyreDto){
+        Tyre tyre=Tyre.builder()
+                .id(tyreDto.getId())
+                .name(tyreDto.getTyreName())
+                .profile(tyreDto.getTyreProfile())
+                .price(tyreDto.getPrice())
+                .manufacturer(tyreDto.getTyreManufacturer())
+                .build();
+        return tyre;
+    }
+    private TyreDto toDto(Tyre tyre){
+        TyreDto tyreDto= TyreDto.builder()
+                .id(tyre.getId())
+                .tyreName(tyre.getName())
+                .tyreProfile(tyre.getProfile())
+                .price(tyre.getPrice())
+                .tyreManufacturer(tyre.getManufacturer())
+                .build();
+        return tyreDto;
+    }
+
 }
