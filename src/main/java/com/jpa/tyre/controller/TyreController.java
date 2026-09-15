@@ -24,7 +24,7 @@ public class TyreController {
         if (tyres.isEmpty()){
            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else {
-            return new ResponseEntity<>(tyres,HttpStatus.FOUND);
+            return new ResponseEntity<>(tyres,HttpStatus.OK);
         }
     }
     @GetMapping("/{id}")
